@@ -1,7 +1,7 @@
-package com.vsd.vsd3d.controller;
+package com.vsd.vsd3d.product.ProductController;
 
-import com.vsd.vsd3d.dto.CategoryDto;
-import com.vsd.vsd3d.service.CategoryService;
+import com.vsd.vsd3d.product.ProductDto.CategoryDto;
+import com.vsd.vsd3d.product.ProductService.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

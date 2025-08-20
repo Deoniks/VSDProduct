@@ -1,6 +1,6 @@
-package com.vsd.vsd3d.repository;
+package com.vsd.vsd3d.user.UserRepository;
 
-import com.vsd.vsd3d.domain.Users;
+import com.vsd.vsd3d.user.UserEntity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

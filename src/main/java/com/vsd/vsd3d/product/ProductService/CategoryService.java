@@ -1,8 +1,8 @@
-package com.vsd.vsd3d.service;
+package com.vsd.vsd3d.product.ProductService;
 
-import com.vsd.vsd3d.dto.CategoryDto;
-import com.vsd.vsd3d.mapper.CategoryMapper;
-import com.vsd.vsd3d.repository.CategoryRepository;
+import com.vsd.vsd3d.product.ProductDto.CategoryDto;
+import com.vsd.vsd3d.product.ProductMapper.CategoryMapper;
+import com.vsd.vsd3d.product.ProductRepository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

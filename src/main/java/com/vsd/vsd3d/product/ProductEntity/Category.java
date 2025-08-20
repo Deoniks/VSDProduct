@@ -1,4 +1,4 @@
-package com.vsd.vsd3d.domain;
+package com.vsd.vsd3d.product.ProductEntity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

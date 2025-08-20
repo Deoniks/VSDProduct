@@ -1,7 +1,7 @@
-package com.vsd.vsd3d.service;
+package com.vsd.vsd3d.user.UserService;
 
 
-import com.vsd.vsd3d.dto.UserDto;
+import com.vsd.vsd3d.user.UserDto.UserDto;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
-package com.vsd.vsd3d.mapper;
+package com.vsd.vsd3d.product.ProductMapper;
 
-import com.vsd.vsd3d.domain.Category;
-import com.vsd.vsd3d.dto.CategoryDto;
+import com.vsd.vsd3d.product.ProductDto.CategoryDto;
+import com.vsd.vsd3d.product.ProductEntity.Category;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

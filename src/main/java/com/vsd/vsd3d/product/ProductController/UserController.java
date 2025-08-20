@@ -1,7 +1,7 @@
-package com.vsd.vsd3d.controller;
+package com.vsd.vsd3d.product.ProductController;
 
-import com.vsd.vsd3d.dto.UserDto;
-import com.vsd.vsd3d.service.UserServiceImpl;
+import com.vsd.vsd3d.product.ProductDto.UserDto;
+import com.vsd.vsd3d.product.ProductService.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

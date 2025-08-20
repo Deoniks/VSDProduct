@@ -1,9 +1,9 @@
-package com.vsd.vsd3d.service;
+package com.vsd.vsd3d.user.UserService;
 
-import com.vsd.vsd3d.domain.Users;
-import com.vsd.vsd3d.dto.UserDto;
-import com.vsd.vsd3d.mapper.UserMapper;
-import com.vsd.vsd3d.repository.UserRepository;
+import com.vsd.vsd3d.user.UserDto.UserDto;
+import com.vsd.vsd3d.user.UserEntity.Users;
+import com.vsd.vsd3d.user.UserMapper.UserMapper;
+import com.vsd.vsd3d.user.UserRepository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
     private final UserMapper mapper;
