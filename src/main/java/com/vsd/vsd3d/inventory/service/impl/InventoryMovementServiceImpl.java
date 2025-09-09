@@ -105,6 +105,16 @@ public class InventoryMovementServiceImpl implements InventoryMovementService {
         );
     }
 
+        @Override
+    public BigDecimal getProductStock(Long productId) {
+        return getProductStock(productId, null);
+    }
+
+    @Override
+    public BigDecimal getConsumableStock(Long consumableId) {
+        return getConsumableStock(consumableId, null);
+    }
+
     // ---------- Internal ----------
     private void save(MovementType type,
                       RefType refType,
