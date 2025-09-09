@@ -1,8 +1,9 @@
 package com.vsd.vsd3d.product.ProductService.impl;
 
 import com.vsd.vsd3d.exception.NotFoundException;
+import com.vsd.vsd3d.inventory.entity.RefType;
 import com.vsd.vsd3d.inventory.service.InventoryMovementService;
-import com.vsd.vsd3d.inventory.entity.InventoryMovement.RefType;
+import com.vsd.vsd3d.inventory.entity.InventoryMovement;
 import com.vsd.vsd3d.product.ProductDto.PurchaseDto;
 import com.vsd.vsd3d.product.ProductEntity.Product;
 import com.vsd.vsd3d.product.ProductEntity.Purchase;
@@ -48,7 +49,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 
         inventoryService.addProductIn(
                 dto.getProduct_id(), saved.getId(),
-                RefType.PURCHASE, saved.getQuantity(), saved.getDate()
+                RefType.PRODUCT_PURCHASE, saved.getQuantity(), saved.getDate()
         );
         return purchaseMapper.toDto(saved);
     }
@@ -70,11 +71,11 @@ public class PurchaseServiceImpl implements PurchaseService {
         e.setCommissionPercent(dto.getCommissionPercent());
         e.setComment(dto.getComment());
 
-        inventoryService.deleteByRef(RefType.PURCHASE, e.getId());
+        inventoryService.deleteByRef(RefType.PRODUCT_PURCHASE, e.getId());
         var saved = purchaseRepository.save(e);
         inventoryService.addProductIn(
                 saved.getProduct().getId(), saved.getId(),
-                RefType.PURCHASE, saved.getQuantity(), saved.getDate()
+                RefType.PRODUCT_PURCHASE, saved.getQuantity(), saved.getDate()
         );
         return purchaseMapper.toDto(saved);
     }
@@ -82,7 +83,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Override
     public void delete(Long id) {
         if(!purchaseRepository.existsById(id)) throw new NotFoundException("Purchase not found");
-        inventoryService.deleteByRef(RefType.PURCHASE, id);
+        inventoryService.deleteByRef(RefType.PRODUCT_PURCHASE, id);
         purchaseRepository.deleteById(id);
     }
 }

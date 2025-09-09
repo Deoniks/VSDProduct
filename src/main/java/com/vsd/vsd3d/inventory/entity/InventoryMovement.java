@@ -16,20 +16,12 @@ import java.time.LocalDateTime;
                 @Index(name = "idx_mov_consumable_date", columnList = "consumable_id,occurredAt"),
                 @Index(name = "idx_mov_ref", columnList = "refType,refId")
         })
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class InventoryMovement {
-
-    public enum MovementType { IN, OUT }
-
-    public enum RefType {
-        PURCHASE,              // закупка товара
-        SALE,                  // продажа товара
-        CONSUMABLE_PURCHASE,   // закупка расходника
-        CONSUMABLE_USAGE,      // списание расходника
-        PRODUCTION_IN,         // выпуск готового
-        PRODUCTION_OUT,        // потребление материалов
-        ADJUSTMENT             // корректировка
-    }
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,10 +31,11 @@ public class InventoryMovement {
     @Enumerated(EnumType.STRING) @Column(nullable = false)
     private MovementType type;
 
-    @Enumerated(EnumType.STRING) @Column(nullable = false)
+    @Enumerated(EnumType.STRING) @Column(nullable = false, name = "ref_type")
     private RefType refType;
 
-    @Column(nullable = false) private Long refId;
+    @Column(nullable = false,name = "ref_id")
+    private Long refId;
 
     @Column(nullable = false, precision = 12, scale = 3)
     private BigDecimal quantity;
@@ -52,7 +45,7 @@ public class InventoryMovement {
     @ManyToOne @JoinColumn(name = "consumable_id")
     private Consumable consumable;    // РОВНО одно из двух
 
-
+}
 
 /*@Entity
 @Table(name = "inventory_movements",
@@ -102,4 +95,4 @@ public class InventoryMovement {
 
     @ManyToOne @JoinColumn(name = "consumable_id")
     private Consumable consumable;  // ровно одно из двух должно быть*/
-}
+

@@ -9,8 +9,8 @@ import com.vsd.vsd3d.consumable.ConsumableRepository.ConsumablePurchaseRepositor
 import com.vsd.vsd3d.consumable.ConsumableRepository.ConsumableRepository;
 import com.vsd.vsd3d.consumable.ConsumableService.ConsumablePurchaseService;
 import com.vsd.vsd3d.exception.NotFoundException;
+import com.vsd.vsd3d.inventory.entity.RefType;
 import com.vsd.vsd3d.inventory.service.InventoryMovementService;
-import com.vsd.vsd3d.inventory.entity.InventoryMovement.RefType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -1,30 +1,41 @@
 package com.vsd.vsd3d.inventory.service;
 
 import com.vsd.vsd3d.inventory.entity.InventoryMovement;
+import com.vsd.vsd3d.inventory.entity.RefType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface InventoryMovementService {
-
-    // Stocks
-    BigDecimal getProductStock(Long productId);
-    BigDecimal getConsumableStock(Long consumableId);
+    
     void assertEnoughProduct(Long productId, BigDecimal qty);
     void assertEnoughConsumable(Long consumableId, BigDecimal qty);
 
     // Movements
-    void addProductIn(Long productId, Long refId, InventoryMovement.RefType refType,
+    void addProductIn(Long productId, Long refId, RefType refType,
                       BigDecimal qty, LocalDate date);
 
-    void addProductOut(Long productId, Long refId, InventoryMovement.RefType refType,
+    void addProductOut(Long productId, Long refId, RefType refType,
                        BigDecimal qty, LocalDate date);
 
-    void addConsumableIn(Long consumableId, Long refId, InventoryMovement.RefType refType,
+    void addConsumableIn(Long consumableId, Long refId, RefType refType,
                          BigDecimal qty, LocalDate date);
 
-    void addConsumableOut(Long consumableId, Long refId, InventoryMovement.RefType refType,
+    void addConsumableOut(Long consumableId, Long refId, RefType refType,
                           BigDecimal qty, LocalDate date);
 
-    void deleteByRef(InventoryMovement.RefType refType, Long refId);
+    void deleteByRef(RefType refType, Long refId);
+
+    BigDecimal getProductStock(Long productId, LocalDateTime toInclusive);
+    BigDecimal getConsumableStock(Long consumableId, LocalDateTime toInclusive);
+
+    Page<InventoryMovement> findByProduct(Long productId, Pageable pageable);
+    Page<InventoryMovement> findByConsumable(Long consumableId, Pageable pageable);
+
+    // ----- Защита от отрицательных остатков (опционально) -----
+    //void assertEnoughProduct(Long productId, BigDecimal qtyNeeded);
+    //void assertEnoughConsumable(Long consumableId, BigDecimal qtyNeeded);
 }

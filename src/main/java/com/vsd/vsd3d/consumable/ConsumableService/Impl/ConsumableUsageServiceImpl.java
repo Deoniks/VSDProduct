@@ -8,8 +8,8 @@ import com.vsd.vsd3d.consumable.ConsumableRepository.ConsumableRepository;
 import com.vsd.vsd3d.consumable.ConsumableRepository.ConsumableUsageRepository;
 import com.vsd.vsd3d.consumable.ConsumableService.ConsumableUsageService;
 import com.vsd.vsd3d.exception.NotFoundException;
+import com.vsd.vsd3d.inventory.entity.RefType;
 import com.vsd.vsd3d.inventory.service.InventoryMovementService;
-import com.vsd.vsd3d.inventory.entity.InventoryMovement.RefType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -50,7 +50,7 @@ public class ConsumableUsageServiceImpl implements ConsumableUsageService {
 
         inventoryService.addConsumableOut(
                 dto.getConsumableId(), saved.getId(),
-                RefType.CONSUMABLE_USAGE, saved.getQuantity(), saved.getDate()
+                RefType.CONSUMABLE_USE, saved.getQuantity(), saved.getDate()
         );
         return mapper.toDto(saved);
     }
@@ -74,11 +74,11 @@ public class ConsumableUsageServiceImpl implements ConsumableUsageService {
         e.setReason(dto.getReason());
         e.setComment(dto.getComment());
 
-        inventoryService.deleteByRef(RefType.CONSUMABLE_USAGE, e.getId());
+        inventoryService.deleteByRef(RefType.CONSUMABLE_USE, e.getId());
         var saved = usageRepository.save(e);
         inventoryService.addConsumableOut(
                 saved.getConsumable().getId(), saved.getId(),
-                RefType.CONSUMABLE_USAGE, saved.getQuantity(), saved.getDate()
+                RefType.CONSUMABLE_USE, saved.getQuantity(), saved.getDate()
         );
         return mapper.toDto(saved);
     }
@@ -87,7 +87,7 @@ public class ConsumableUsageServiceImpl implements ConsumableUsageService {
     @Transactional
     public void delete(Long id) {
         if (!usageRepository.existsById(id)) throw new NotFoundException("Consumable usage not found");
-        inventoryService.deleteByRef(RefType.CONSUMABLE_USAGE, id);
+        inventoryService.deleteByRef(RefType.CONSUMABLE_USE, id);
         usageRepository.deleteById(id);
     }
 }

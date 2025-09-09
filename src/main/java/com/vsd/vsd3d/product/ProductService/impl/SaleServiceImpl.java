@@ -1,8 +1,8 @@
 package com.vsd.vsd3d.product.ProductService.impl;
 
 import com.vsd.vsd3d.exception.NotFoundException;
+import com.vsd.vsd3d.inventory.entity.RefType;
 import com.vsd.vsd3d.inventory.service.InventoryMovementService;
-import com.vsd.vsd3d.inventory.entity.InventoryMovement.RefType;
 import com.vsd.vsd3d.product.ProductDto.SaleDto;
 import com.vsd.vsd3d.product.ProductEntity.Product;
 import com.vsd.vsd3d.product.ProductEntity.Sale;
@@ -50,7 +50,7 @@ public class SaleServiceImpl implements SaleService {
 
         inventoryService.addProductOut(
                 dto.getProductId(), saved.getId(),
-                RefType.SALE, saved.getQuantity(), saved.getDate()
+                RefType.PRODUCT_SALE, saved.getQuantity(), saved.getDate()
         );
         return mapper.toDto(saved);
     }
@@ -77,11 +77,11 @@ public class SaleServiceImpl implements SaleService {
         existing.setSource(dto.getSource());
         existing.setComment(dto.getComment());
 
-        inventoryService.deleteByRef(RefType.SALE, existing.getId());
+        inventoryService.deleteByRef(RefType.PRODUCT_SALE, existing.getId());
         var saved = saleRepo.save(existing);
         inventoryService.addProductOut(
                 saved.getProduct().getId(), saved.getId(),
-                RefType.SALE, saved.getQuantity(), saved.getDate()
+                RefType.PRODUCT_SALE, saved.getQuantity(), saved.getDate()
         );
         return mapper.toDto(saved);
     }
@@ -90,7 +90,7 @@ public class SaleServiceImpl implements SaleService {
     @Transactional
     public void delete(Long id) {
         if (!saleRepo.existsById(id)) throw new NotFoundException("Sale not found");
-        inventoryService.deleteByRef(RefType.SALE, id);
+        inventoryService.deleteByRef(RefType.PRODUCT_SALE, id);
         saleRepo.deleteById(id);
     }
 }
