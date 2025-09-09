@@ -1,3 +1,10 @@
+package com.vsd.vsd3d.inventory.service;
+
+import com.vsd.vsd3d.inventory.entity.InventoryMovement;
+import com.vsd.vsd3d.inventory.entity.RefType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
