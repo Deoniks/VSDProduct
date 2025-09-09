@@ -7,8 +7,54 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "inventory_movements",
+        indexes = {
+                @Index(name = "idx_mov_product_date", columnList = "product_id,occurredAt"),
+                @Index(name = "idx_mov_consumable_date", columnList = "consumable_id,occurredAt"),
+                @Index(name = "idx_mov_ref", columnList = "refType,refId")
+        })
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class InventoryMovement {
+
+    public enum MovementType { IN, OUT }
+
+    public enum RefType {
+        PURCHASE,              // закупка товара
+        SALE,                  // продажа товара
+        CONSUMABLE_PURCHASE,   // закупка расходника
+        CONSUMABLE_USAGE,      // списание расходника
+        PRODUCTION_IN,         // выпуск готового
+        PRODUCTION_OUT,        // потребление материалов
+        ADJUSTMENT             // корректировка
+    }
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false) private LocalDateTime occurredAt;
+
+    @Enumerated(EnumType.STRING) @Column(nullable = false)
+    private MovementType type;
+
+    @Enumerated(EnumType.STRING) @Column(nullable = false)
+    private RefType refType;
+
+    @Column(nullable = false) private Long refId;
+
+    @Column(nullable = false, precision = 12, scale = 3)
+    private BigDecimal quantity;
+
+    @ManyToOne @JoinColumn(name = "product_id")
+    private Product product;          // РОВНО одно из двух
+    @ManyToOne @JoinColumn(name = "consumable_id")
+    private Consumable consumable;    // РОВНО одно из двух
+
+
+
+/*@Entity
 @Table(name = "inventory_movements",
         indexes = {
         @Index(columnList = "product_id, date"),
@@ -55,5 +101,5 @@ public class InventoryMovement {
     private Product product;        // ровно одно из двух должно быть
 
     @ManyToOne @JoinColumn(name = "consumable_id")
-    private Consumable consumable;  // ровно одно из двух должно быть
+    private Consumable consumable;  // ровно одно из двух должно быть*/
 }
