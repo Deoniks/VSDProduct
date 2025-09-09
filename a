@@ -1,0 +1,54 @@
+[33mcommit fdb476effac6f0c759ab008064d704b48becb712[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m
+Author: Deoniks <dmitrykv97@gmail.com>
+Date:   Mon Sep 8 21:21:00 2025 +0500
+
+    create consumable module
+
+[33mcommit f8bd12f606277ef42f626aacd759943aab2d114e[m[33m ([m[1;31morigin/masterNB[m[33m)[m
+Author: Deoniks <dmitrykv97@gmail.com>
+Date:   Sat Aug 23 15:00:56 2025 +0600
+
+    add exception
+
+[33mcommit daea845927ccdc66cdb7fbf1a4b01196be9d0b26[m
+Author: Deoniks <dmitrykv97@gmail.com>
+Date:   Wed Aug 20 13:09:26 2025 +0600
+
+    create Consumable
+
+[33mcommit 54b7de26d5bcc7a615c5a13071250ec3636f3e64[m
+Author: Deoniks <dmitrykv97@gmail.com>
+Date:   Wed Aug 20 13:00:24 2025 +0600
+
+    reorganization architecture
+
+[33mcommit 21820492bb2bfa17e47ea8ac0a3603cda7acb61d[m
+Merge: 9240a43 3e7761a
+Author: Deoniks <dmitrykv97@gmail.com>
+Date:   Wed Aug 20 12:32:35 2025 +0600
+
+    ulpoad to work machine, fix bug and rebuild
+
+[33mcommit 3e7761a0f0ec76a24fe114cadfa16c992f13737b[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: Deoniks <dmitrykv97@gmail.com>
+Date:   Sat Aug 16 20:20:28 2025 +0500
+
+    create users module
+
+[33mcommit 9240a433fe73ed1f19d3f55d6b82a9f68ebbb4cd[m
+Author: Deoniks <dmitrykv97@gmail.com>
+Date:   Sat Aug 16 13:56:08 2025 +0600
+
+    Upload and install and settings in working notebook
+
+[33mcommit e23b561c1d1b0f13577aa4b60259da2f94342f97[m
+Author: Deoniks <dmitrykv97@gmail.com>
+Date:   Fri Aug 15 21:45:04 2025 +0500
+
+    create Category Model
+
+[33mcommit a77c45b3741652be3c1ff62dbc5f38e1d1a95ec8[m
+Author: Deoniks <dmitrykv97@gmail.com>
+Date:   Fri Aug 15 20:38:46 2025 +0500
+
+    create app, and test architecture

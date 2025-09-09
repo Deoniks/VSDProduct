@@ -3,6 +3,7 @@ package com.vsd.vsd3d.product.ProductService.impl;
 import com.vsd.vsd3d.exception.GlobalExceptionHandler;
 import com.vsd.vsd3d.exception.NotFoundException;
 import com.vsd.vsd3d.product.ProductDto.ProductDto;
+import com.vsd.vsd3d.product.ProductEntity.Category;
 import com.vsd.vsd3d.product.ProductEntity.Product;
 import com.vsd.vsd3d.product.ProductMapper.ProductMapper;
 import com.vsd.vsd3d.product.ProductRepository.CategoryRepository;
@@ -35,16 +36,36 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto create(ProductDto dto) {
-        return null;
+        Category category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new NotFoundException("Category not found"));
+
+        Product product = mapper.enitity(dto);
+        product.setCategory(category);
+        return mapper.toDto(productRepo.save(product));
     }
 
     @Override
     public ProductDto update(Long id, ProductDto dto) {
-        return null;
+        Product existing = productRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("Product not found"));
+
+        Category category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new NotFoundException("Category not found"));
+
+        existing.setName(dto.getName());
+        existing.setSku(dto.getSku());
+        existing.setCategory(category);
+        existing.setDescription(dto.getDescription());
+        existing.setUnit(dto.getUnit());
+
+        return mapper.toDto(productRepo.save(existing));
     }
 
     @Override
     public void delete(Long id) {
-
+        if (!productRepo.existsById(id)) {
+            throw new NotFoundException("Product not found");
+        }
+        productRepo.deleteById(id);
     }
 }
