@@ -9,6 +9,8 @@ import com.vsd.vsd3d.consumable.ConsumableRepository.ConsumablePurchaseRepositor
 import com.vsd.vsd3d.consumable.ConsumableRepository.ConsumableRepository;
 import com.vsd.vsd3d.consumable.ConsumableService.ConsumablePurchaseService;
 import com.vsd.vsd3d.exception.NotFoundException;
+import com.vsd.vsd3d.inventory.service.InventoryMovementService;
+import com.vsd.vsd3d.inventory.entity.InventoryMovement.RefType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ public class ConsumablePurchaseServiceImpl implements ConsumablePurchaseService 
     private final ConsumablePurchaseRepository purchaseRepository;
     private final ConsumableRepository consumableRepository;
     private final ConsumablePurchaseMapper mapper;
+    private final InventoryMovementService inventoryService;
 
     @Override
     public Page<ConsumablePurchaseDto> getAll(Pageable pageable) {
@@ -36,11 +39,19 @@ public class ConsumablePurchaseServiceImpl implements ConsumablePurchaseService 
     @Override
     @Transactional
     public ConsumablePurchaseDto create(ConsumablePurchaseDto dto) {
-        Consumable c = consumableRepository.findById(dto.getConsumableId())
+        var c = consumableRepository.findById(dto.getConsumableId())
                 .orElseThrow(() -> new NotFoundException("Consumable not found"));
-        ConsumablePurchase e = mapper.toEntity(dto);
+
+        var e = mapper.toEntity(dto);
         e.setConsumable(c);
-        return mapper.toDto(purchaseRepository.save(e));
+        var saved = purchaseRepository.save(e);
+
+        // ✅ теперь вызываем по ID
+        inventoryService.addConsumableIn(
+                dto.getConsumableId(), saved.getId(),
+                RefType.CONSUMABLE_PURCHASE, saved.getQuantity(), saved.getDate()
+        );
+        return mapper.toDto(saved);
     }
 
     @Override
@@ -59,6 +70,13 @@ public class ConsumablePurchaseServiceImpl implements ConsumablePurchaseService 
         e.setUnitPrice(dto.getUnitPrice());
         e.setDeliveryCost(dto.getDeliveryCost());
         e.setComment(dto.getComment());
+
+        inventoryService.deleteByRef(RefType.CONSUMABLE_PURCHASE, e.getId());
+        var saved = purchaseRepository.save(e);
+        inventoryService.addConsumableIn(
+                saved.getConsumable().getId(), saved.getId(),
+                RefType.CONSUMABLE_PURCHASE, saved.getQuantity(), saved.getDate());
+
         return mapper.toDto(purchaseRepository.save(e));
     }
 
@@ -66,6 +84,7 @@ public class ConsumablePurchaseServiceImpl implements ConsumablePurchaseService 
     @Transactional
     public void delete(Long id) {
         if (!purchaseRepository.existsById(id)) throw new NotFoundException("Consumable purchase not found");
+        inventoryService.deleteByRef(RefType.CONSUMABLE_PURCHASE, id);
         purchaseRepository.deleteById(id);
     }
 }

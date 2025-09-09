@@ -1,6 +1,8 @@
 package com.vsd.vsd3d.product.ProductService.impl;
 
 import com.vsd.vsd3d.exception.NotFoundException;
+import com.vsd.vsd3d.inventory.service.InventoryMovementService;
+import com.vsd.vsd3d.inventory.entity.InventoryMovement.RefType;
 import com.vsd.vsd3d.product.ProductDto.SaleDto;
 import com.vsd.vsd3d.product.ProductEntity.Product;
 import com.vsd.vsd3d.product.ProductEntity.Sale;
@@ -21,6 +23,7 @@ public class SaleServiceImpl implements SaleService {
     private final SaleRepository saleRepo;
     private final ProductRepository productRepo;
     private final SaleMapper mapper;
+    private final InventoryMovementService inventoryService;
 
     @Override
     public Page<SaleDto> getAll(Pageable pageable) {
@@ -38,21 +41,34 @@ public class SaleServiceImpl implements SaleService {
     public SaleDto create(SaleDto dto) {
         Product product = productRepo.findById(dto.getProductId())
                 .orElseThrow(() -> new NotFoundException("Product not found"));
-        Sale entity = mapper.toEntity(dto);
-        entity.setProduct(product);
-        return mapper.toDto(saleRepo.save(entity));
+
+        inventoryService.assertEnoughProduct(dto.getProductId(), dto.getQuantity());
+
+        var e = mapper.toEntity(dto);
+        e.setProduct(product);
+        var saved = saleRepo.save(e);
+
+        inventoryService.addProductOut(
+                dto.getProductId(), saved.getId(),
+                RefType.SALE, saved.getQuantity(), saved.getDate()
+        );
+        return mapper.toDto(saved);
     }
 
     @Override
     @Transactional
     public SaleDto update(Long id, SaleDto dto) {
-        Sale existing = saleRepo.findById(id)
+        var existing = saleRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Sale not found"));
+
         if (!existing.getProduct().getId().equals(dto.getProductId())) {
-            Product product = productRepo.findById(dto.getProductId())
+            var p = productRepo.findById(dto.getProductId())
                     .orElseThrow(() -> new NotFoundException("Product not found"));
-            existing.setProduct(product);
+            existing.setProduct(p);
         }
+
+        inventoryService.assertEnoughProduct(dto.getProductId(), dto.getQuantity());
+
         existing.setDate(dto.getDate());
         existing.setQuantity(dto.getQuantity());
         existing.setSalePrice(dto.getSalePrice());
@@ -60,13 +76,21 @@ public class SaleServiceImpl implements SaleService {
         existing.setCommissionPercent(dto.getCommissionPercent());
         existing.setSource(dto.getSource());
         existing.setComment(dto.getComment());
-        return mapper.toDto(saleRepo.save(existing));
+
+        inventoryService.deleteByRef(RefType.SALE, existing.getId());
+        var saved = saleRepo.save(existing);
+        inventoryService.addProductOut(
+                saved.getProduct().getId(), saved.getId(),
+                RefType.SALE, saved.getQuantity(), saved.getDate()
+        );
+        return mapper.toDto(saved);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
         if (!saleRepo.existsById(id)) throw new NotFoundException("Sale not found");
+        inventoryService.deleteByRef(RefType.SALE, id);
         saleRepo.deleteById(id);
     }
 }

@@ -8,6 +8,8 @@ import com.vsd.vsd3d.consumable.ConsumableRepository.ConsumableRepository;
 import com.vsd.vsd3d.consumable.ConsumableRepository.ConsumableUsageRepository;
 import com.vsd.vsd3d.consumable.ConsumableService.ConsumableUsageService;
 import com.vsd.vsd3d.exception.NotFoundException;
+import com.vsd.vsd3d.inventory.service.InventoryMovementService;
+import com.vsd.vsd3d.inventory.entity.InventoryMovement.RefType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +22,7 @@ public class ConsumableUsageServiceImpl implements ConsumableUsageService {
     private final ConsumableUsageRepository usageRepository;
     private final ConsumableRepository consumableRepository;
     private final ConsumableUsageMapper mapper;
+    private final InventoryMovementService inventoryService;
 
     @Override
     public Page<ConsumableUsageDto> getAll(Pageable pageable) {
@@ -35,11 +38,21 @@ public class ConsumableUsageServiceImpl implements ConsumableUsageService {
     @Override
     @Transactional
     public ConsumableUsageDto create(ConsumableUsageDto dto) {
-        Consumable c = consumableRepository.findById(dto.getConsumableId())
+        var c = consumableRepository.findById(dto.getConsumableId())
                 .orElseThrow(() -> new NotFoundException("Consumable not found"));
-        ConsumableUsage e = mapper.toEntity(dto);
+
+        // ✅ проверяем остаток по ID
+        inventoryService.assertEnoughConsumable(dto.getConsumableId(), dto.getQuantity());
+
+        var e = mapper.toEntity(dto);
         e.setConsumable(c);
-        return mapper.toDto(usageRepository.save(e));
+        var saved = usageRepository.save(e);
+
+        inventoryService.addConsumableOut(
+                dto.getConsumableId(), saved.getId(),
+                RefType.CONSUMABLE_USAGE, saved.getQuantity(), saved.getDate()
+        );
+        return mapper.toDto(saved);
     }
 
     @Override
@@ -53,17 +66,28 @@ public class ConsumableUsageServiceImpl implements ConsumableUsageService {
                     .orElseThrow(() -> new NotFoundException("Consumable not found"));
             e.setConsumable(c);
         }
+
+        inventoryService.assertEnoughConsumable(dto.getConsumableId(), dto.getQuantity());
+
         e.setDate(dto.getDate());
         e.setQuantity(dto.getQuantity());
         e.setReason(dto.getReason());
         e.setComment(dto.getComment());
-        return mapper.toDto(usageRepository.save(e));
+
+        inventoryService.deleteByRef(RefType.CONSUMABLE_USAGE, e.getId());
+        var saved = usageRepository.save(e);
+        inventoryService.addConsumableOut(
+                saved.getConsumable().getId(), saved.getId(),
+                RefType.CONSUMABLE_USAGE, saved.getQuantity(), saved.getDate()
+        );
+        return mapper.toDto(saved);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
         if (!usageRepository.existsById(id)) throw new NotFoundException("Consumable usage not found");
+        inventoryService.deleteByRef(RefType.CONSUMABLE_USAGE, id);
         usageRepository.deleteById(id);
     }
 }
